@@ -21,6 +21,7 @@ package org.apache.archiva.redback.users.jpa;
 
 import org.apache.archiva.redback.users.*;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 /**
@@ -28,6 +29,10 @@ import java.util.List;
  */
 @org.springframework.stereotype.Service("userManager#jpa")
 public class JpaUserManager extends AbstractUserManager {
+
+    @javax.inject.Inject
+    EntityManagerFactory entityManagerFactory;
+
     @Override
     public boolean isReadOnly() {
         return false;
@@ -35,7 +40,7 @@ public class JpaUserManager extends AbstractUserManager {
 
     @Override
     public String getId() {
-        return null;
+        return "jpa";
     }
 
     @Override
