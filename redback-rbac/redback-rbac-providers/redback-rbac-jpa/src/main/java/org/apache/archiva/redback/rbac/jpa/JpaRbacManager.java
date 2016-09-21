@@ -20,6 +20,7 @@ package org.apache.archiva.redback.rbac.jpa;
  */
 
 import org.apache.archiva.redback.rbac.*;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
@@ -29,6 +30,7 @@ import java.util.List;
 /**
  * Created by martin on 20.09.16.
  */
+@Service("rbacManager#jpa")
 public class JpaRbacManager extends AbstractRBACManager implements RBACManagerListener {
 
     @Inject
