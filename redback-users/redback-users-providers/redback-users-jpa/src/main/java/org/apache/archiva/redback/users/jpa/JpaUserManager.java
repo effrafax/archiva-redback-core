@@ -33,6 +33,10 @@ public class JpaUserManager extends AbstractUserManager {
     @javax.inject.Inject
     EntityManagerFactory entityManagerFactory;
 
+    public void setEntityManagerFactory(EntityManagerFactory factory) {
+        this.entityManagerFactory = factory;
+    }
+
     @Override
     public boolean isReadOnly() {
         return false;
