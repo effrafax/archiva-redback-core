@@ -19,8 +19,12 @@ package org.apache.archiva.redback.users.jpa;
  * under the License.
  */
 
+import org.apache.archiva.redback.policy.UserSecurityPolicy;
 import org.apache.archiva.redback.users.*;
+import org.apache.archiva.redback.users.jpa.model.JpaUser;
+import org.apache.commons.lang.StringUtils;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -32,8 +36,11 @@ import java.util.List;
 @org.springframework.stereotype.Service("userManager#jpa")
 public class JpaUserManager extends AbstractUserManager {
 
-    @javax.inject.Inject
+    @Inject
     EntityManagerFactory entityManagerFactory;
+
+    @Inject
+    private UserSecurityPolicy userSecurityPolicy;
 
     public void setEntityManagerFactory(EntityManagerFactory factory) {
         this.entityManagerFactory = factory;
@@ -49,9 +56,18 @@ public class JpaUserManager extends AbstractUserManager {
         return "jpa";
     }
 
+    private EntityManager getEm() {
+        return entityManagerFactory.createEntityManager();
+    }
+
     @Override
     public User createUser(String username, String fullName, String emailAddress) throws UserManagerException {
-        return null;
+
+        JpaUser user = new JpaUser();
+        user.setUsername(username);
+        user.setFullName(fullName);
+        user.setEmail(emailAddress);
+        return user;
     }
 
     @Override
@@ -61,7 +77,7 @@ public class JpaUserManager extends AbstractUserManager {
 
     @Override
     public List<User> getUsers() throws UserManagerException {
-        EntityManager em = entityManagerFactory.createEntityManager();
+        EntityManager em = getEm();
         Query q= em.createQuery("SELECT x from JpaUser x");
         return q.getResultList();
     }
@@ -73,7 +89,38 @@ public class JpaUserManager extends AbstractUserManager {
 
     @Override
     public User addUser(User user) throws UserManagerException {
-        return null;
+        EntityManager em = getEm();
+        if ( !( user instanceof JpaUser ) )
+        {
+            throw new UserManagerException( "Unable to Add User. User object " + user.getClass().getName() +
+                    " is not an instance of " + JpaUser.class.getName() );
+        }
+
+        if ( StringUtils.isEmpty( user.getUsername() ) )
+        {
+            throw new IllegalStateException(
+                    Messages.getString( "user.manager.cannot.add.user.without.username" ) ); //$NON-NLS-1$
+        }
+
+        userSecurityPolicy.extensionChangePassword( user );
+
+        fireUserManagerUserAdded( user );
+
+        // TODO: find a better solution
+        // workaround for avoiding the admin from providing another password on the next login after the
+        // admin account has been created
+        // extensionChangePassword by default sets the password change status to false
+        if ( "admin".equals( user.getUsername() ) )
+        {
+            user.setPasswordChangeRequired( false );
+        }
+        else
+        {
+            user.setPasswordChangeRequired( true );
+        }
+
+        em.persist(user);
+        return user;
     }
 
     @Override

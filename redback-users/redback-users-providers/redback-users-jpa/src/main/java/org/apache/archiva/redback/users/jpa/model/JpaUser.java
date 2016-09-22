@@ -57,7 +57,7 @@ public class JpaUser implements org.apache.archiva.redback.users.User {
 
     @Override
     public void setUsername(String name) {
-        this.username = username;
+        this.username = name;
     }
 
     @Override
