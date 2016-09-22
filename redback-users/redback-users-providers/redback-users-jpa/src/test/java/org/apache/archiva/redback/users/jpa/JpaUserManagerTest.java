@@ -1,6 +1,9 @@
 package org.apache.archiva.redback.users.jpa;
 
 import org.apache.archiva.redback.users.provider.test.AbstractUserManagerTestCase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.inject.Inject;
@@ -15,6 +18,8 @@ import java.util.Properties;
 
 public class JpaUserManagerTest extends AbstractUserManagerTestCase {
 
+    Log log = LogFactory.getLog(JpaUserManagerTest.class);
+
     @Inject
     @Named("userManager#jpa")
     JpaUserManager jpaUserManager;
@@ -23,10 +28,16 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
     @Named("defaultUserEntityManagerFactory")
     EntityManagerFactory entityManagerFactory;
 
+    @Before
     @Override
     public void setUp() throws Exception {
+
         super.setUp();
+        log.info("test setup");
         Properties props = new Properties();
+        super.setUserManager(jpaUserManager);
+        assertNotNull(jpaUserManager);
+        log.info("injected usermanager "+jpaUserManager);
 
     // create the factory defined by the "openjpa" entity-manager entry
   
@@ -35,5 +46,11 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
     @Test
     public void testInit() {
         jpaUserManager.initialize();
+    }
+
+    @Override
+    public void testUserExists() throws Exception {
+        log.info("Testing userExists");
+        super.testUserExists();
     }
 }

@@ -21,7 +21,9 @@ package org.apache.archiva.redback.users.jpa;
 
 import org.apache.archiva.redback.users.*;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -59,7 +61,9 @@ public class JpaUserManager extends AbstractUserManager {
 
     @Override
     public List<User> getUsers() throws UserManagerException {
-        return null;
+        EntityManager em = entityManagerFactory.createEntityManager();
+        Query q= em.createQuery("SELECT x from JpaUser x");
+        return q.getResultList();
     }
 
     @Override
