@@ -27,9 +27,6 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
     @Named("userManager#jpa")
     JpaUserManager jpaUserManager;
 
-    @Inject
-    @Named("defaultUserEntityManagerFactory")
-    EntityManagerFactory entityManagerFactory;
 
     @Inject
     private UserSecurityPolicy securityPolicy;
@@ -39,8 +36,11 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
     public void setUp() throws Exception {
 
         super.setUp();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("redback-users-jpa");
+
         log.info("test setup");
         Properties props = new Properties();
+        jpaUserManager.setEntityManager(emf.createEntityManager());
         super.setUserManager(jpaUserManager);
         assertNotNull(jpaUserManager);
         log.info("injected usermanager "+jpaUserManager);
@@ -56,30 +56,5 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
 
 
 
-    @Test
-    public void testUserExists()
-            throws Exception
-    {
-        assertCleanUserManager();
-        securityPolicy.setEnabled( false );
 
-        UserManager um = getUserManager();
-
-        // create and add a few users
-        User u1 = um.createUser( "admin", "Administrator", "admin@somedomain.com" );
-        u1.setPassword( "adminpass" );
-        um.addUser( u1 );
-
-        assertTrue( um.userExists( "admin" ) );
-        assertFalse( um.userExists( "voodoohatrack" ) );
-
-        /* Check into the event tracker. */
-        assertEquals( 1, getEventTracker().countInit );
-        assertNotNull( getEventTracker().lastDbFreshness );
-        assertTrue( getEventTracker().lastDbFreshness.booleanValue() );
-
-        assertEquals( 1, getEventTracker().addedUsernames.size() );
-        assertEquals( 0, getEventTracker().removedUsernames.size() );
-        assertEquals( 0, getEventTracker().updatedUsernames.size() );
-    }
 }
