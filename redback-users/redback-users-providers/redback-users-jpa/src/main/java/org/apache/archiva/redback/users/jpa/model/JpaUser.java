@@ -48,6 +48,7 @@ public class JpaUser implements org.apache.archiva.redback.users.User {
     private int countFailedLoginAttempts;
     private Date accountCreationDate;
     private Date lastLoginDate;
+    private String rawPassword;
 
 
     @Override
@@ -82,11 +83,12 @@ public class JpaUser implements org.apache.archiva.redback.users.User {
 
     @Override
     public String getPassword() {
-        return null;
+        return rawPassword;
     }
 
     @Override
     public void setPassword(String rawPassword) {
+        this.rawPassword = rawPassword;
     }
 
     @Override

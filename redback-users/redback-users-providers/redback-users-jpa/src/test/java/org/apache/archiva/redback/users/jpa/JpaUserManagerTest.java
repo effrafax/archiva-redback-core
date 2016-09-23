@@ -1,5 +1,8 @@
 package org.apache.archiva.redback.users.jpa;
 
+import org.apache.archiva.redback.policy.UserSecurityPolicy;
+import org.apache.archiva.redback.users.User;
+import org.apache.archiva.redback.users.UserManager;
 import org.apache.archiva.redback.users.provider.test.AbstractUserManagerTestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +31,9 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
     @Named("defaultUserEntityManagerFactory")
     EntityManagerFactory entityManagerFactory;
 
+    @Inject
+    private UserSecurityPolicy securityPolicy;
+
     @Before
     @Override
     public void setUp() throws Exception {
@@ -48,9 +54,32 @@ public class JpaUserManagerTest extends AbstractUserManagerTestCase {
         jpaUserManager.initialize();
     }
 
-    @Override
-    public void testUserExists() throws Exception {
-        log.info("Testing userExists");
-        super.testUserExists();
+
+
+    @Test
+    public void testUserExists()
+            throws Exception
+    {
+        assertCleanUserManager();
+        securityPolicy.setEnabled( false );
+
+        UserManager um = getUserManager();
+
+        // create and add a few users
+        User u1 = um.createUser( "admin", "Administrator", "admin@somedomain.com" );
+        u1.setPassword( "adminpass" );
+        um.addUser( u1 );
+
+        assertTrue( um.userExists( "admin" ) );
+        assertFalse( um.userExists( "voodoohatrack" ) );
+
+        /* Check into the event tracker. */
+        assertEquals( 1, getEventTracker().countInit );
+        assertNotNull( getEventTracker().lastDbFreshness );
+        assertTrue( getEventTracker().lastDbFreshness.booleanValue() );
+
+        assertEquals( 1, getEventTracker().addedUsernames.size() );
+        assertEquals( 0, getEventTracker().removedUsernames.size() );
+        assertEquals( 0, getEventTracker().updatedUsernames.size() );
     }
 }

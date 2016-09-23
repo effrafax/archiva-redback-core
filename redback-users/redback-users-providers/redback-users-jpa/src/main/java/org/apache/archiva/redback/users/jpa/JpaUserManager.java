@@ -24,6 +24,7 @@ import org.apache.archiva.redback.users.*;
 import org.apache.archiva.redback.users.jpa.model.JpaUser;
 import org.apache.commons.lang.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -118,8 +119,9 @@ public class JpaUserManager extends AbstractUserManager {
         {
             user.setPasswordChangeRequired( true );
         }
-
-        em.persist(user);
+        em.getTransaction().begin();
+        em.persist((JpaUser)user);
+        em.getTransaction().commit();
         return user;
     }
 
@@ -159,8 +161,10 @@ public class JpaUserManager extends AbstractUserManager {
     }
 
     @Override
-    public boolean userExists(String principal) throws UserManagerException {
-        return false;
+    public boolean userExists(String principal) throws UserManagerException  {
+        EntityManager em = getEm();
+        JpaUser user = em.find(JpaUser.class, principal);
+        return user != null;
     }
 
     @Override
@@ -175,7 +179,11 @@ public class JpaUserManager extends AbstractUserManager {
 
     @Override
     public void eraseDatabase() {
-
+        EntityManager em = getEm();
+        em.getTransaction().begin();
+        Query q = em.createQuery("DELETE FROM JpaUser u");
+        q.executeUpdate();
+        em.getTransaction().commit();
     }
 
     @Override
@@ -187,4 +195,8 @@ public class JpaUserManager extends AbstractUserManager {
     public String getDescriptionKey() {
         return null;
     }
+
+
+
+
 }
