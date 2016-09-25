@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-    <persistence-unit name="redback-users-jpa">
-        <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-        <jta-data-source>jdbc/redbackjpa</jta-data-source>
-        <class>org.apache.archiva.redback.users.jpa.model.JpaUser</class>
-    </persistence-unit>
-</persistence>
