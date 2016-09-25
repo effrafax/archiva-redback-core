@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>redback-rbac-jpa</artifactId>
+  <packaging>jar</packaging>
+  <name>Redback :: RBAC Provider :: JPA</name>
 
     <dependencies>
         <dependency>
@@ -30,9 +32,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.archiva.redback</groupId>
+            <artifactId>redback-common-jpa</artifactId>
+        </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.1.0.Final</version>
+      </dependency>
+        <dependency>
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa</artifactId>
-            <version>2.4.1</version>
+            <version>${openjpa.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
