@@ -22,5 +22,9 @@
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         <jta-data-source>java:comp/env/jdbc/redbackjpa</jta-data-source>
         <class>org.apache.archiva.redback.users.jpa.model.JpaUser</class>
+        <class>org.apache.archiva.redback.rbac.jpa.model.JpaOperation</class>
+        <class>org.apache.archiva.redback.rbac.jpa.model.JpaResource</class>
+        <class>org.apache.archiva.redback.rbac.jpa.model.JpaPermission</class>
+        <class>org.apache.archiva.redback.rbac.jpa.model.JpaRole</class>
     </persistence-unit>
 </persistence>
