@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class JpaUserManager extends AbstractUserManager {
 
 
-    @PersistenceContext(unitName = "redback-users-jpa")
+    @PersistenceContext(unitName = "redback-jpa")
     EntityManager em;
 
     @Inject
