@@ -22,6 +22,7 @@ package org.apache.archiva.redback.users.jpa.model;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
  * Created by martin on 20.09.16.
  */
 @Entity
+@Table(name="JDOUSER")
 public class JpaUser implements org.apache.archiva.redback.users.User {
 
     @Id
