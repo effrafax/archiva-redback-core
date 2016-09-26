@@ -4,7 +4,6 @@ import org.apache.archiva.redback.rbac.Resource;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -14,7 +13,6 @@ import java.io.Serializable;
 public class JpaResource implements Resource, Serializable {
 
     @Id
-    @NotNull
     private String identifier;
     private boolean pattern;
     private boolean permanent;

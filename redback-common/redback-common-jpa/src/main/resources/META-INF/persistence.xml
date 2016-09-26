@@ -26,5 +26,6 @@
         <class>org.apache.archiva.redback.rbac.jpa.model.JpaResource</class>
         <class>org.apache.archiva.redback.rbac.jpa.model.JpaPermission</class>
         <class>org.apache.archiva.redback.rbac.jpa.model.JpaRole</class>
+        <class>org.apache.archiva.redback.rbac.jpa.model.JpaUserAssignment</class>
     </persistence-unit>
 </persistence>

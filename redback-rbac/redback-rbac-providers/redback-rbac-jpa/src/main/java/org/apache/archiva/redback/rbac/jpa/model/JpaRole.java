@@ -22,20 +22,9 @@ package org.apache.archiva.redback.rbac.jpa.model;
 import org.apache.archiva.redback.rbac.AbstractRole;
 import org.apache.archiva.redback.rbac.Permission;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,7 +37,6 @@ import java.util.List;
 public class JpaRole extends AbstractRole implements Serializable {
 
     @Id
-    @NotNull
     private String name;
     private String description;
     private boolean assignable;

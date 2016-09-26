@@ -20,21 +20,13 @@ package org.apache.archiva.redback.rbac.jpa;
  */
 
 import org.apache.archiva.redback.rbac.*;
-import org.apache.archiva.redback.rbac.jpa.model.JpaOperation;
-import org.apache.archiva.redback.rbac.jpa.model.JpaPermission;
-import org.apache.archiva.redback.rbac.jpa.model.JpaResource;
-import org.apache.archiva.redback.rbac.jpa.model.JpaRole;
+import org.apache.archiva.redback.rbac.jpa.model.*;
 import org.apache.openjpa.persistence.Type;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PostPersist;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -113,8 +105,8 @@ public class JpaRbacManager extends AbstractRBACManager  {
     @Override
     public List<Role> getAllRoles() throws RbacManagerException {
         final EntityManager em = getEm();
-        TypedQuery<JpaRole> q = em.createQuery("SELECT r FROM JpaRole r", JpaRole.class);
-        return (List<Role>)(List<?>)q.getResultList();
+        Query q = em.createQuery("SELECT r FROM JpaRole r");
+        return q.getResultList();
     }
 
     @Override
@@ -254,8 +246,8 @@ public class JpaRbacManager extends AbstractRBACManager  {
     @Override
     public List<Operation> getAllOperations() throws RbacManagerException {
         final EntityManager em = getEm();
-        TypedQuery<JpaOperation> q = em.createQuery("SELECT o FROM JpaOperation o",JpaOperation.class);
-        return (List<Operation>)(List<?>)q.getResultList();
+        Query q = em.createQuery("SELECT o FROM JpaOperation o");
+        return q.getResultList();
     }
 
     @Override
@@ -337,32 +329,65 @@ public class JpaRbacManager extends AbstractRBACManager  {
 
     @Override
     public UserAssignment createUserAssignment(String principal) throws RbacManagerException {
-        return null;
+        JpaUserAssignment ua = new JpaUserAssignment();
+        ua.setPrincipal(principal);
+        return ua;
     }
 
     @Override
     public UserAssignment saveUserAssignment(UserAssignment userAssignment) throws RbacObjectInvalidException, RbacManagerException {
-        return null;
+        RBACObjectAssertions.assertValid(userAssignment);
+        if (!(userAssignment instanceof JpaUserAssignment)) {
+            throw new RbacObjectInvalidException("Cannto save object that is not JpaUserAssignment");
+        }
+        final EntityManager em = getEm();
+        em.getTransaction().begin();
+        em.persist(userAssignment);
+        em.getTransaction().commit();
+        fireRbacUserAssignmentSaved(userAssignment);
+        return userAssignment;
     }
 
     @Override
     public UserAssignment getUserAssignment(String principal) throws RbacObjectNotFoundException, RbacManagerException {
-        return null;
+        final EntityManager em = getEm();
+        UserAssignment ua = em.find(JpaUserAssignment.class, principal);
+        if (ua==null) {
+            throw new RbacObjectNotFoundException("User assignment not found "+principal);
+        }
+        return ua;
     }
 
     @Override
     public List<UserAssignment> getAllUserAssignments() throws RbacManagerException {
-        return null;
+        final EntityManager em = getEm();
+        Query q = em.createQuery("SELECT ua FROM JpaUserAssignment ua");
+        return q.getResultList();
     }
 
     @Override
     public List<UserAssignment> getUserAssignmentsForRoles(Collection<String> roleNames) throws RbacManagerException {
-        return null;
+        final EntityManager em = getEm();
+        Query q = em.createQuery("SELECT ua FROM JpaUserAssignment ua, ua.roleNames rn WHERE rn IN :rolenames");
+        q.setParameter("rolenames",roleNames);
+        return q.getResultList();
     }
 
     @Override
     public void removeUserAssignment(UserAssignment userAssignment) throws RbacObjectNotFoundException, RbacObjectInvalidException, RbacManagerException {
-
+        RBACObjectAssertions.assertValid(userAssignment);
+        if (userAssignment.isPermanent()) {
+            throw new RbacObjectInvalidException("Cannot remove permanent object "+userAssignment.getPrincipal());
+        }
+        final EntityManager em = getEm();
+        em.getTransaction().begin();
+        UserAssignment ua = em.find(UserAssignment.class, userAssignment.getPrincipal());
+        if (ua==null) {
+            throw new RbacObjectNotFoundException("User assignment not found "+userAssignment.getPrincipal());
+        }
+        em.remove(ua);
+        em.getTransaction().commit();
+        fireRbacUserAssignmentRemoved(userAssignment);
     }
 
     @Override

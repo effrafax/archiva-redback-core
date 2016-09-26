@@ -31,7 +31,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -41,7 +40,6 @@ import java.io.Serializable;
 public class JpaPermission implements Permission,Serializable {
 
     @Id
-    @NotNull
     private String name;
     private String description;
     private boolean permanent;
