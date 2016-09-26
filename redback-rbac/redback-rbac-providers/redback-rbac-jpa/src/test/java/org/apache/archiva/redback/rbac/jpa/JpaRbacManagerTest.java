@@ -42,8 +42,6 @@ import java.util.Properties;
 public class JpaRbacManagerTest
     extends AbstractRbacManagerTestCase
 {
-    private StoreManagerDebug storeManager;
-
 
     @Inject
     @Named(value = "rbacManager#jpa")
@@ -86,12 +84,7 @@ public class JpaRbacManagerTest
     public void testGetAssignedRoles()
         throws RbacManagerException
     {
-        storeManager.resetCounter();
         super.testGetAssignedRoles();
-        int counter = storeManager.counter();
-        /* without Level 2 cache: 15 queries */
-        /* with    Level 2 cache:  8 queries */
-        assertEquals( "Number of SQL queries", 8, counter );
     }
 
     @Override
@@ -99,17 +92,12 @@ public class JpaRbacManagerTest
         throws RbacManagerException
     {
         super.testGetAssignedPermissionsDeep();
-        int counter = storeManager.counter();
-        /* without Level 2 cache: 26 queries */
-        /* with    Level 2 cache: 10 queries */
-        assertEquals( "Number of SQL queries", 10, counter );
     }
 
     @Override
     protected void afterSetup()
     {
         super.afterSetup();
-        storeManager.resetCounter();
     }
 
     @Override

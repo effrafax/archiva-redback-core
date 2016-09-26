@@ -402,7 +402,10 @@ public class JpaRbacManager extends AbstractRBACManager  {
         q.executeUpdate();
         q = em.createQuery("DELETE FROM JpaResource r");
         q.executeUpdate();
+        q = em.createQuery("DELETE FROM JpaUserAssignment ua");
+        q.executeUpdate();
         em.getTransaction().commit();
+
 
     }
 
