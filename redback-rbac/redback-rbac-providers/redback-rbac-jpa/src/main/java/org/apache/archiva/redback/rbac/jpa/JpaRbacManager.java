@@ -393,17 +393,37 @@ public class JpaRbacManager extends AbstractRBACManager  {
     @Override
     public void eraseDatabase() {
         final EntityManager em = getEm();
+        // Deletion is a bit tricky, because the JPA bulk delete queries do not cascade
+        // or keep foreign keys into account. 
         em.getTransaction().begin();
-        Query q = em.createQuery("DELETE FROM JpaRole r");
-        q.executeUpdate();
-        q = em.createQuery("DELETE FROM JpaPermission p");
-        q.executeUpdate();
-        q = em.createQuery("DELETE FROM JpaOperation o");
-        q.executeUpdate();
-        q = em.createQuery("DELETE FROM JpaResource r");
-        q.executeUpdate();
-        q = em.createQuery("DELETE FROM JpaUserAssignment ua");
-        q.executeUpdate();
+        TypedQuery<JpaPermission> tqp = em.createQuery("SELECT r FROM JpaPermission r",JpaPermission.class);
+        for(JpaPermission p : tqp.getResultList()) {
+            p.setOperation(null);
+            p.setResource(null);
+        }
+        TypedQuery<JpaRole> tqr = em.createQuery("SELECT r FROM JpaRole r",JpaRole.class);
+        for (JpaRole r : tqr.getResultList()) {
+            r.getPermissions().clear();
+        }
+        em.flush();
+        TypedQuery<JpaOperation> tqo = em.createQuery("SELECT o FROM JpaOperation o",JpaOperation.class);
+        for(JpaOperation o : tqo.getResultList()) {
+            em.remove(o);
+        }
+        TypedQuery<JpaResource> tqre = em.createQuery("SELECT re FROM JpaResource re",JpaResource.class);
+        for(JpaResource re : tqre.getResultList()) {
+            em.remove(re);
+        }
+        for (JpaPermission p : tqp.getResultList()) {
+            em.remove(p);
+        }
+        for (JpaRole r : tqr.getResultList()) {
+            em.remove(r);
+        }
+        TypedQuery<JpaUserAssignment> tqu = em.createQuery("SELECT ua FROM JpaUserAssignment ua", JpaUserAssignment.class);
+        for(JpaUserAssignment ua : tqu.getResultList()) {
+            em.remove(ua);
+        }
         em.getTransaction().commit();
 
 
