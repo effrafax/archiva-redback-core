@@ -27,5 +27,10 @@
         <class>org.apache.archiva.redback.rbac.jpa.model.JpaPermission</class>
         <class>org.apache.archiva.redback.rbac.jpa.model.JpaRole</class>
         <class>org.apache.archiva.redback.rbac.jpa.model.JpaUserAssignment</class>
+        <properties>
+            <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)" />
+            <property name="openjpa.jdbc.MappingDefaults"
+                      value="ForeignKeyDeleteAction=restrict,JoinForeignKeyDeleteAction=restrict"/>
+        </properties>
     </persistence-unit>
 </persistence>
