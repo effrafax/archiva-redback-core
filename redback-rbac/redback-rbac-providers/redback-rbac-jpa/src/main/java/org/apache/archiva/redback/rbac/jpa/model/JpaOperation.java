@@ -21,19 +21,25 @@ package org.apache.archiva.redback.rbac.jpa.model;
 
 import org.apache.archiva.redback.rbac.Operation;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * Created by martin on 25.09.16.
  */
 @Entity
+@Table(name="SECURITY_OPERATIONS")
 public class JpaOperation implements Operation, Serializable {
 
     @Id
+    @Column(name="NAME")
     private String name;
+    @Column(name="DESCRIPTION")
     private String description;
+    @Column(name="PERMANENT")
     private boolean permanent;
 
 

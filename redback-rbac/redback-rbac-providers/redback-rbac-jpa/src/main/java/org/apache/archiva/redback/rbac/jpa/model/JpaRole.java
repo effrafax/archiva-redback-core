@@ -37,9 +37,13 @@ import java.util.List;
 public class JpaRole extends AbstractRole implements Serializable {
 
     @Id
+    @Column(name="NAME")
     private String name;
+    @Column(name="DESCRIPTION")
     private String description;
+    @Column(name="ASSIGNABLE")
     private boolean assignable;
+    @Column(name="PERMANENT")
     private boolean permanent;
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(

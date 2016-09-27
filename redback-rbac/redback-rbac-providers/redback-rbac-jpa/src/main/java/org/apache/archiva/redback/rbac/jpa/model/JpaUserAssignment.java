@@ -21,9 +21,7 @@ package org.apache.archiva.redback.rbac.jpa.model;
 
 import org.apache.archiva.redback.rbac.AbstractUserAssignment;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +30,23 @@ import java.util.List;
  * Created by Martin Stockhammer <martin_s@apache.org> on 26.09.16.
  */
 @Entity
+@Table(name="SECURITY_USER_ASSIGNMENTS")
 public class JpaUserAssignment extends AbstractUserAssignment implements Serializable {
 
 
     @Id
+    @Column(name="PRINCIPAL")
     private String principal;
     @ElementCollection
+    @Column(name="STRING_ELE")
+    @CollectionTable(
+            name="SECURITY_USERASSIGNMENT_MAP",
+            joinColumns = {
+                    @JoinColumn(name = "PRINCIPAL_OID", referencedColumnName = "PRINCIPAL")
+            }
+    )
     private List<String> roleNames = new ArrayList<String>();
+    @Column(name="PERMANENT")
     private boolean permanent = false;
 
     @Override

@@ -24,24 +24,22 @@ import org.apache.archiva.redback.rbac.Permission;
 import org.apache.archiva.redback.rbac.Resource;
 import org.apache.archiva.redback.rbac.jpa.JpaRbacManager;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Created by martin on 25.09.16.
  */
 @Entity
+@Table(name="SECURITY_PERMISSIONS")
 public class JpaPermission implements Permission,Serializable {
 
     @Id
+    @Column(name="NAME")
     private String name;
+    @Column(name="DESCRIPTION")
     private String description;
+    @Column(name="PERMANENT")
     private boolean permanent;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(

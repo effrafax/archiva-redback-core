@@ -21,19 +21,25 @@ package org.apache.archiva.redback.rbac.jpa.model;
 
 import org.apache.archiva.redback.rbac.Resource;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * Created by martin on 25.09.16.
  */
 @Entity
+@Table(name="SECURITY_RESOURCES")
 public class JpaResource implements Resource, Serializable {
 
     @Id
+    @Column(name="IDENTIFIER")
     private String identifier;
+    @Column(name="PATTERN")
     private boolean pattern;
+    @Column(name="PERMANENT")
     private boolean permanent;
 
 
