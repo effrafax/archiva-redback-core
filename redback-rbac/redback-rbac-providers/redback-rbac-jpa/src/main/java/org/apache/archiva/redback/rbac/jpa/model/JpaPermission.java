@@ -1,10 +1,5 @@
 package org.apache.archiva.redback.rbac.jpa.model;
 
-import org.apache.archiva.redback.rbac.Operation;
-import org.apache.archiva.redback.rbac.Permission;
-import org.apache.archiva.redback.rbac.Resource;
-import org.apache.archiva.redback.rbac.jpa.JpaRbacManager;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,6 +18,11 @@ import org.apache.archiva.redback.rbac.jpa.JpaRbacManager;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import org.apache.archiva.redback.rbac.Operation;
+import org.apache.archiva.redback.rbac.Permission;
+import org.apache.archiva.redback.rbac.Resource;
+import org.apache.archiva.redback.rbac.jpa.JpaRbacManager;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
